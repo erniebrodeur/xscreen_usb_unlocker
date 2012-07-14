@@ -25,7 +25,7 @@ module XscreenUsbUnlocker
       super
 
       if @options[:version]
-        puts XscreenUsbUnlocker::Version
+        puts XscreenUsbUnlocker::VERSION
         exit 0
       end
 
