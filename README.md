@@ -26,16 +26,20 @@ To find these just run `lsusb` and look for the `1234:ABCD` piece, that is your 
 
 		$ xscreen_usb_unlocker -d 1234:ABCD
 
+		$ xscreen_usb_unlocker -d 1234:
+
+		$ xscreen_usb_unlocker -d :ABCD
+
 You can also save these so you don't have to retype them, or have them in your history:
 
 		$ xscreen_usb_unlocker -s SERIAL -d 1234:ABCD --save-config
 
-Last, it can be daemonized, if this happens it will write a log to your homedirectory in: `~/.logs/xscreen_usb_unlocker.log`.  After you've saved your config, this is the simplest way to enable/disable it.
+Last, it can be daemonized, if this happens it will write a log to your homedirectory in: `~/.logs/xscreen_usb_unlocker.log`.
 
 		$ xscreen_usb_unlocker -D
 
-You can control logging and the logfile as well, likely I will disable the log for the 1.0 release.
-
+If a config file is present, it assumes you want to daemonize and it assumes you want logging enabled.  I will likely disable logging for a release version.  But automatic daemonizing is nice
+.
 If you unlock xscreensaver by hand, you are not disabling this, the next time you plug/unplug your usb device, it will lock again.  This is useful if for some reason your usb device isn't available, you can still use your system as normal.
 
 ## SECURITY
