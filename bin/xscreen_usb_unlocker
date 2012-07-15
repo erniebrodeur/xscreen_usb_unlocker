@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 require 'xscreen_usb_unlocker'
-include XscreenUsbUnlocker
+
 Options.banner = "Usage: Used to lock/unlock xscreensaver based on usb device id and serial."
 Options.on("-s", "--serial SERIAL", "make sure the device matches this serial.") { |s| Options[:serial] = s}
 Options.on("-d", "--device DEVICE", "make sure it is this specific device.") { |d| Options[:device] = d}
@@ -11,57 +11,6 @@ Options.parse!
 if !Options[:device] && !Options[:serial]
   puts 'Must supply a device or serial to look for.'
   exit
-end
-
-def lock_screen
-  Log.info 'locking'
-  p = spawn "xscreensaver -no-splash"
-  Process.detach p
-  %x[xscreensaver-command -lock]
-end
-
-def unlock_screen
-  Log.info 'unlocking'
-
-  if xscreensaver_pids
-    xscreensaver_pids.each do |p|
-      Log.info "Appears to be pid: #{p.pid}"
-      Process.kill "QUIT", p.pid
-    end
-  end
-end
-
-def xscreensaver_running?
-  xscreensaver_pids.any?
-end
-
-def xscreensaver_pids
-  Sys::ProcTable.ps.select{|x| x.cmdline.include?("xscreensaver") && !x.cmdline.include?("ruby")}
-end
-
-def plugged_in?
-  usb = LIBUSB::Context.new
-  options_hash = {}
-
-  if Options[:device]
-    v, p = Options[:device].split(":")
-    options_hash[:idVendor] = v.hex if v && !v.empty?
-    options_hash[:idProduct] = p.hex if p && !p.empty?
-  end
-
-  devices = usb.devices(options_hash)
-  return true if devices.select { |d| d.serial_number == Options[:serial]}.any?
-  false
-end
-
-def toggle_lock
-  if plugged_in?
-    Log.info 'unlock requested'
-    unlock_screen
-  else
-    Log.info 'lock request'
-    lock_screen
-  end
 end
 
 # did we pry?
