@@ -1,10 +1,11 @@
 #!/usr/bin/ruby
 require 'xscreen_usb_unlocker'
-
+include XscreenUsbUnlocker
 Options.banner = "Usage: Used to lock/unlock xscreensaver based on usb device id and serial."
 Options.on("-s", "--serial SERIAL", "make sure the device matches this serial.") { |s| Options[:serial] = s}
 Options.on("-d", "--device DEVICE", "make sure it is this specific device.") { |d| Options[:device] = d}
 Options.on("-D", "--daemonize", "Daemonize this process in the background.") { |d| Options[:daemonize] = true}
+Options.on("-k", "--kill-daemon", "Kill any pids available in memory.") { |d| Options[:kill_daemon] = true }
 Options.on("--save-config", "Save the device and serial to a XscreenUsbUnlocker::Config file and exit.") { |d| Options[:save_config] = true}
 Options.parse!
 
@@ -25,8 +26,14 @@ if Options[:save_config]
   exit
 end
 
+if Options[:kill_daemon]
+  App.kill_daemon
+  puts "Killing daemon."
+  exit
+end
+
 # kill a running copy of xscreensaver
-if xscreensaver_running?
+if XscreenUsbUnlocker.xscreensaver_running?
   Log.info "xscreensaver appears to be running, killing so we can trap it."
   %x[killall -QUIT xscreensaver]
 end
@@ -35,15 +42,15 @@ end
 Notifier = INotify::Notifier.new
 Dir.glob("/dev/bus/usb/*").each do |d|
   Notifier.watch(d, :delete, :create) do
-    toggle_lock
+    XscreenUsbUnlocker.toggle_lock
   end
 end
 
 # fire off the lock cycle once.
-toggle_lock
+XscreenUsbUnlocker.toggle_lock
 
 # start the notifier, which will fire off callbacks as needed.
-if Options[:daemonize] || File.file?(XscreenUsbUnlocker::Config.file)
+if Options[:daemonize]
   Log.debug "Opening logfile."
   Log.filename "/home/ebrodeur/.logs/xscreensaver_unlocker.log"
   Log.debug "Daemonizing."
@@ -51,3 +58,4 @@ if Options[:daemonize] || File.file?(XscreenUsbUnlocker::Config.file)
 else
   Notifier.run
 end
+
