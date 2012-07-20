@@ -22,7 +22,7 @@ if Options[:save_config]
   XscreenUsbUnlocker::Config["serial"] = Options[:serial] if Options[:serial]
   XscreenUsbUnlocker::Config["device"] = Options[:device] if Options[:device]
   XscreenUsbUnlocker::Config.save!
-  puts "Saved configuration to #{Config.file}"
+  puts "Saved configuration to #{XscreenUsbUnlocker::Config.file}"
   exit
 end
 
