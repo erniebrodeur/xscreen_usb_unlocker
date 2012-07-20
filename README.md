@@ -38,8 +38,6 @@ Last, it can be daemonized, if this happens it will write a log to your homedire
 
 		$ xscreen_usb_unlocker -D
 
-If a config file is present, it assumes you want to daemonize and it assumes you want logging enabled.  I will likely disable logging for a release version.  But automatic daemonizing is nice
-.
 If you unlock xscreensaver by hand, you are not disabling this, the next time you plug/unplug your usb device, it will lock again.  This is useful if for some reason your usb device isn't available, you can still use your system as normal.
 
 ## SECURITY

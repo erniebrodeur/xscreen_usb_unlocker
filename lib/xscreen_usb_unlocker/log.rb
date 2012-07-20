@@ -69,7 +69,10 @@ module XscreenUsbUnlocker
     end
 
     def create_logger
-      FileUtils.mkdir_p File.dirname @options[:filename] if File.file? @options[:filename]
+      if @options[:filename] != STDOUT && !File.file?(@options[:filename])
+        FileUtils.mkdir_p File.dirname @options[:filename]
+      end
+
       @l = ::Logger.new(@options[:filename])
       @l.level = @options[:level]
 
