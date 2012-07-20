@@ -38,13 +38,6 @@ module XscreenUsbUnlocker
       end
     end
 
-    def on_pry
-      if @options[:pry]
-        require 'pry'
-        binding.pry
-      end
-    end
-
     def [](k)
       @options[k]
     end

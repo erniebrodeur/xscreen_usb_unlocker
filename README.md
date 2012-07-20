@@ -50,7 +50,6 @@ All it does is start/kill (safely) xscreensaver based on scanning for usb device
 
 ## TODO:
 
-* Add a --kill option to remove the other daemonizes.
 * Add a --name to trap for the device name (regex? substring?)
 * Add basic device detection to print out a pretty table to help configure it (offer options and save automatically?)
 

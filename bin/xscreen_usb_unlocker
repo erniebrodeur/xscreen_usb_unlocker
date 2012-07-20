@@ -14,9 +14,6 @@ if !Options[:device] && !Options[:serial]
   exit
 end
 
-# did we pry?
-Options.on_pry
-
 # should we save our config and bail?
 if Options[:save_config]
   XscreenUsbUnlocker::Config["serial"] = Options[:serial] if Options[:serial]
