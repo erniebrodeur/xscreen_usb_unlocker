@@ -10,29 +10,27 @@ This will work best with a device that presents a unique serial number, and you 
 
 ## Usage
 
-To make sure it's not any device plugged or unpluged, you have to supply either a serial or a device id to scan for.
+### Automatic
 
-For now, the serial can be found with:
+To try to detect devices do:
 
-		$ lsusb -v |grep Serial
+		$ xscreen_usb_unlocker --select-device
+
+Obviously, the device has to be plugged in for this to work.  Give it a try and let me know if anything doesn't work.  It's interactive and will save a config file for you.
+
+### Manual
+
+You can also do all this by hand via methods like this via the output of lsusb.
 
 Once you find the device (if it has a serial, most phone's do.)
 
 		$ xscreen_usb_unlocker -s SERIAL
 
-If it doesn't provide a serial, you can also use a device id.  Either the vendor, device or both can be supplied in a `vendor:device` format.
-
-To find these just run `lsusb` and look for the `1234:ABCD` piece, that is your device id.
-
-		$ xscreen_usb_unlocker -d 1234:ABCD
-
-		$ xscreen_usb_unlocker -d 1234:
-
-		$ xscreen_usb_unlocker -d :ABCD
-
 You can also save these so you don't have to retype them, or have them in your history:
 
 		$ xscreen_usb_unlocker -s SERIAL -d 1234:ABCD --save-config
+
+### Running
 
 Last, it can be daemonized, if this happens it will write a log to your homedirectory in: `~/.logs/xscreen_usb_unlocker.log`.
 
