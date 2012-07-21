@@ -89,11 +89,11 @@ end
 
 # better way to do this with: Kernel.module_eval def puts ...
 module Kernel
-  def puts (s)
+  def puts (*args)
     if Log.override_puts?
       Log.info s
     else
-      Kernel::puts s
+      Kernel::puts args
     end
   end
 end

@@ -6,8 +6,45 @@ Options.on("-s", "--serial SERIAL", "make sure the device matches this serial.")
 Options.on("-d", "--device DEVICE", "make sure it is this specific device.") { |d| Options[:device] = d}
 Options.on("-D", "--daemonize", "Daemonize this process in the background.") { |d| Options[:daemonize] = true}
 Options.on("-k", "--kill-daemon", "Kill any pids available in memory.") { |d| Options[:kill_daemon] = true }
+Options.on("--select-device", "Select a device to lock the screen with..") { |d| Options[:select_device] = true}
 Options.on("--save-config", "Save the device and serial to a XscreenUsbUnlocker::Config file and exit.") { |d| Options[:save_config] = true}
 Options.parse!
+
+
+if Options[:select_device]
+  usb = LIBUSB::Context.new
+  devices = usb.devices.select{|x| x.bDeviceClass != 9} # this probably doesn't need to be a '9' but I haven't looked it up yet.
+  if devices.any?
+    devices.each do |d|
+      puts "(#{devices.index d}) #{d.manufacturer} #{d.product}"
+    end
+    puts "Which device would you like to lock with?"
+
+    print "-> "
+    c = STDIN.getc
+
+    d = devices[c.to_i]
+    if !d
+      puts "No such selection #{c}"
+      exit
+    end
+    puts "Using #{d.product} to lock/unlock."
+    new_config = XscreenUsbUnlocker::ConfigBlob.new(load = false)
+
+    if d.serial_number == "?"
+      puts "Warning, this device doesn't appear to have a serial number, anybody with the same device will be able to unlock your screen."
+    else
+      new_config["serial"] = d.serial_number
+    end
+    new_config["device"] = "%04x:%04x" % [d.idVendor, d.idProduct]
+    new_config.save!
+    puts "Saved configuration to #{new_config.file}"
+    exit
+  else
+    puts "You don't have anything plugged in via USB, is that even possible nowadays?"
+  end
+  exit
+end
 
 if !Options[:device] && !Options[:serial]
   puts 'Must supply a device or serial to look for.'

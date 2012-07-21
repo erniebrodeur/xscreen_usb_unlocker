@@ -2,11 +2,11 @@ require 'fileutils'
 
 module XscreenUsbUnlocker
   class ConfigBlob < Hash
-    BaseDir = "/home/ebrodeur/.config/erniebrodeur"
+    BaseDir = "/home/ebrodeur/.config"
 
-    def initialize
+    def initialize(load = true)
       FileUtils.mkdir_p BaseDir if !Dir.exist? BaseDir
-      load
+      load if load
     end
 
     def file
